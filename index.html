@@ -1,1 +1,90 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>☕ Coffee Order</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f6f4f1;
+      padding: 20px;
+    }
+    .card {
+      max-width: 420px;
+      margin: auto;
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    label {
+      margin-top: 12px;
+      display: block;
+      font-weight: 600;
+    }
+    select, input, textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 20px;
+      background: #6f4e37;
+      color: white;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #5c3f2c;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>☕ Coffee Order</h1>
+
+    <form action="https://formspree.io/f/abcdwxyz" method="POST">
+      
+      <label>Drink</label>
+      <select name="drink" required>
+        <option>Latte</option>
+        <option>Cappuccino</option>
+        <option>Americano</option>
+        <option>Espresso</option>
+        <option>Flat White</option>
+      </select>
+
+      <label>Milk</label>
+      <select name="milk">
+        <option>Whole</option>
+        <option>Oat</option>
+        <option>Almond</option>
+        <option>Soy</option>
+        <option>None</option>
+      </select>
+
+      <label>Sugar</label>
+      <select name="sugar">
+        <option>None</option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+      </select>
+
+      <label>Extra notes</label>
+      <textarea name="notes" placeholder="Extra hot, extra love ❤️"></textarea>
+
+      <button type="submit">Order Coffee ☕</button>
+    </form>
+  </div>
+</body>
+</html>
