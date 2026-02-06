@@ -52,38 +52,63 @@
     <h1>☕ Coffee Order</h1>
 
     <form action="https://formspree.io/f/abcdwxyz" method="POST">
-      
-      <label>Drink</label>
-      <select name="drink" required>
-        <option>Latte</option>
-        <option>Cappuccino</option>
-        <option>Americano</option>
-        <option>Espresso</option>
-        <option>Flat White</option>
-      </select>
 
-      <label>Milk</label>
-      <select name="milk">
-        <option>Whole</option>
-        <option>Oat</option>
-        <option>Almond</option>
-        <option>Soy</option>
-        <option>None</option>
-      </select>
+  <label>Coffee Type</label>
+  <select id="coffeeType" name="coffee_type" required>
+    <option value="">Select...</option>
+    <option value="Regular">Regular</option>
+    <option value="Frothy">Frothy</option>
+  </select>
 
-      <label>Sugar</label>
-      <select name="sugar">
-        <option>None</option>
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-      </select>
+  <label>Caffeine</label>
+  <select id="caffeine" name="caffeine" required>
+    <option value="None">None</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+  </select>
 
-      <label>Extra notes</label>
-      <textarea name="notes" placeholder="Extra hot, extra love ❤️"></textarea>
+  <div id="sizeContainer" style="display:none;">
+    <label>Size</label>
+    <select name="size">
+      <option value="Regular">Regular</option>
+      <option value="Large">Large</option>
+    </select>
+  </div>
 
-      <button type="submit">Order Coffee ☕</button>
-    </form>
+  <label>Extra notes</label>
+  <textarea name="notes" placeholder="Extra froth, extra love ❤️"></textarea>
+
+  <button type="submit">Order Coffee ☕</button>
+</form>
+
+<script>
+  const coffeeType = document.getElementById("coffeeType");
+  const caffeine = document.getElementById("caffeine");
+  const sizeContainer = document.getElementById("sizeContainer");
+
+  function updateForm() {
+    const isFrothy = coffeeType.value === "Frothy";
+
+    // Show/hide Size question
+    sizeContainer.style.display = isFrothy ? "block" : "none";
+
+    // Enable/disable caffeine option "2"
+    const caffeineOption2 = [...caffeine.options].find(
+      opt => opt.value === "2"
+    );
+
+    if (isFrothy) {
+      caffeineOption2.disabled = false;
+    } else {
+      caffeineOption2.disabled = true;
+      if (caffeine.value === "2") {
+        caffeine.value = "1";
+      }
+    }
+  }
+
+  coffeeType.addEventListener("change", updateForm);
+</script>
   </div>
 </body>
 </html>
