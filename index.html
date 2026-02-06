@@ -65,18 +65,6 @@
     .success { padding: 32px 16px; text-align: center; }
     .timer { font-size: 18px; margin-top: 12px; font-weight: 600; }
     .hint { font-size: 13px; color: #888; margin-top: 4px; text-align: left; }
-
-    /* Fix extras box containment */
-    #extrasLabel {
-      margin-top: 16px;
-      display: block;
-      text-align: left;
-    }
-    #extrasBox {
-      margin-top: 6px;
-      width: 100%;
-      display: block;
-    }
   </style>
 </head>
 
@@ -111,7 +99,7 @@
             <option value="Single Shot">Single Shot</option>
             <option value="Double Shot">Double Shot</option>
           </select>
-          <div class="hint">Double shot available with Extra Frothy ☕</div>
+          <div class="hint">Double shot only available with Extra Frothy ☕</div>
         </div>
 
         <div id="sizeContainer" class="hidden">
@@ -172,35 +160,36 @@
       coffeeOptions.classList.toggle("hidden", !isCoffee);
       teaOptions.classList.toggle("hidden", !isTea);
 
-      if (isCoffee) {
+      if (isCoffee || isTea) {
         extrasLabel.classList.remove("hidden");
         extrasBox.classList.remove("hidden");
-        extrasBox.placeholder =
-          "Any extras? Syrups, chocolate sprinkles, cinnamon, whipped cream… 🍫✨";
-      } else if (isTea) {
-        extrasLabel.classList.remove("hidden");
-        extrasBox.classList.remove("hidden");
-        extrasBox.placeholder =
-          "Any extras? Biscuits, lemon, honey, extra milk… 🍪🍋";
+        extrasBox.placeholder = isCoffee
+          ? "Any extras? Syrups, chocolate sprinkles, cinnamon, whipped cream… 🍫✨"
+          : "Any extras? Biscuits, lemon, honey, extra milk… 🍪🍋";
       } else {
         extrasLabel.classList.add("hidden");
         extrasBox.classList.add("hidden");
       }
+
+      // Show shots container if coffee
+      shotsContainer.classList.remove("hidden");
+      updateShotsOptions();
     });
 
     // Coffee-specific logic
-    coffeeType.addEventListener("change", () => {
-      const isExtraFrothy = coffeeType.value === "Extra Frothy";
+    coffeeType.addEventListener("change", updateShotsOptions);
 
+    function updateShotsOptions() {
+      const isExtraFrothy = coffeeType.value === "Extra Frothy";
       sizeContainer.classList.toggle("hidden", !isExtraFrothy);
-      shotsContainer.classList.toggle("hidden", !isExtraFrothy);
 
       const doubleShot = [...shots.options].find(o => o.value === "Double Shot");
       doubleShot.disabled = !isExtraFrothy;
+
       if (!isExtraFrothy && shots.value === "Double Shot") {
         shots.value = "Single Shot";
       }
-    });
+    }
 
     // Fake approval timer
     function startApprovalTimer(seconds, drink) {
