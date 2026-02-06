@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>☕ Coffee Order</title>
+  <title>☕ April’s Hot Drink Delivery Service</title>
 
   <style>
     body {
@@ -18,17 +18,13 @@
       margin: auto;
       background: #ffffff;
       border-radius: 20px;
-      padding: 22px;
+      padding: 24px;
       box-shadow: 0 15px 30px rgba(0,0,0,0.12);
-    }
-
-    h1 {
       text-align: center;
-      margin-bottom: 8px;
     }
 
+    h1 { margin-bottom: 8px; }
     .subtitle {
-      text-align: center;
       color: #777;
       margin-bottom: 24px;
       font-size: 14px;
@@ -39,10 +35,10 @@
       margin-top: 16px;
       font-weight: 600;
       font-size: 15px;
+      text-align: left;
     }
 
-    select,
-    textarea {
+    select, textarea {
       width: 100%;
       margin-top: 6px;
       padding: 14px;
@@ -52,10 +48,7 @@
       background: #fafafa;
     }
 
-    textarea {
-      resize: none;
-      height: 80px;
-    }
+    textarea { resize: none; height: 90px; }
 
     button {
       width: 100%;
@@ -70,4 +63,147 @@
       cursor: pointer;
     }
 
-    button:ac
+    .hidden { display: none; }
+
+    .success { padding: 32px 16px; }
+    .timer { font-size: 18px; margin-top: 12px; font-weight: 600; }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+
+    <h1>☕ April’s Hot Drink Delivery Service</h1>
+    <div class="subtitle">Tea • Coffee • One very dedicated husband</div>
+
+    <form id="drinkForm" action="https://formspree.io/f/abcdwxyz" method="POST">
+
+      <label>What would you like?</label>
+      <select id="drinkType" name="drink_type" required>
+        <option value="">Choose…</option>
+        <option value="Coffee">Coffee ☕</option>
+        <option value="Tea">Tea 🍵</option>
+      </select>
+
+      <!-- Coffee options -->
+      <div id="coffeeOptions" class="hidden">
+
+        <label>Coffee Type</label>
+        <select id="coffeeType" name="coffee_type">
+          <option value="Regular">Regular</option>
+          <option value="Extra Frothy">Extra Frothy ☁️</option>
+        </select>
+
+        <label>Shots</label>
+        <select id="shots" name="shots">
+          <option value="No Shot">No Shot</option>
+          <option value="Single Shot">Single Shot</option>
+          <option value="Double Shot">Double Shot</option>
+        </select>
+
+        <div id="sizeContainer" class="hidden">
+          <label>Size</label>
+          <select name="size">
+            <option value="Regular">Regular</option>
+            <option value="Large">Large</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tea options -->
+      <div id="teaOptions" class="hidden">
+        <label>Sugar?</label>
+        <select name="sugar">
+          <option value="No">No</option>
+          <option value="Yes">Yes</option>
+        </select>
+      </div>
+
+      <label>Extras</label>
+      <textarea
+        name="extras"
+        placeholder="Milk, lemon, honey, syrups, chocolate sprinkles… ✨"
+      ></textarea>
+
+      <button type="submit">Place Order ☕🍵</button>
+    </form>
+
+    <div id="successMessage" class="success hidden">
+      <h2 id="successTitle">Order Pending Approval</h2>
+      <p id="successText">Currently under review by the husband.</p>
+      <div id="timerText" class="timer">Estimated approval time: 2:00</div>
+    </div>
+
+  </div>
+
+  <script>
+    const drinkType = document.getElementById("drinkType");
+    const coffeeOptions = document.getElementById("coffeeOptions");
+    const teaOptions = document.getElementById("teaOptions");
+    const coffeeType = document.getElementById("coffeeType");
+    const shots = document.getElementById("shots");
+    const sizeContainer = document.getElementById("sizeContainer");
+    const form = document.getElementById("drinkForm");
+
+    const successMessage = document.getElementById("successMessage");
+    const successTitle = document.getElementById("successTitle");
+    const successText = document.getElementById("successText");
+    const timerText = document.getElementById("timerText");
+
+    drinkType.addEventListener("change", () => {
+      coffeeOptions.classList.toggle("hidden", drinkType.value !== "Coffee");
+      teaOptions.classList.toggle("hidden", drinkType.value !== "Tea");
+    });
+
+    coffeeType.addEventListener("change", () => {
+      const isExtraFrothy = coffeeType.value === "Extra Frothy";
+      sizeContainer.classList.toggle("hidden", !isExtraFrothy);
+
+      const doubleShot = [...shots.options].find(o => o.value === "Double Shot");
+      doubleShot.disabled = !isExtraFrothy;
+      if (!isExtraFrothy && shots.value === "Double Shot") {
+        shots.value = "Single Shot";
+      }
+    });
+
+    function startApprovalTimer(seconds, drink) {
+      let remaining = seconds;
+
+      const interval = setInterval(() => {
+        const mins = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+
+        timerText.textContent =
+          `Estimated approval time: ${mins}:${secs.toString().padStart(2, "0")}`;
+
+        remaining--;
+
+        if (remaining < 0) {
+          clearInterval(interval);
+          successTitle.textContent = "✅ Order Approved";
+          successText.textContent =
+            drink === "Tea"
+              ? "Tea is steeping 🍵💨"
+              : "Coffee preparation has begun ☕💨";
+          timerText.remove();
+        }
+      }, 1000);
+    }
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const chosenDrink = drinkType.value;
+
+      fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" }
+      }).then(() => {
+        form.classList.add("hidden");
+        successMessage.classList.remove("hidden");
+        startApprovalTimer(120, chosenDrink);
+      });
+    });
+  </script>
+</body>
+</html>
