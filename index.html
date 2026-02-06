@@ -151,9 +151,26 @@
     const timerText = document.getElementById("timerText");
 
     drinkType.addEventListener("change", () => {
-      coffeeOptions.classList.toggle("hidden", drinkType.value !== "Coffee");
-      teaOptions.classList.toggle("hidden", drinkType.value !== "Tea");
-    });
+      const extrasBox = document.getElementById("extrasBox");
+
+drinkType.addEventListener("change", () => {
+  const isCoffee = drinkType.value === "Coffee";
+  const isTea = drinkType.value === "Tea";
+
+  coffeeOptions.classList.toggle("hidden", !isCoffee);
+  teaOptions.classList.toggle("hidden", !isTea);
+
+  if (isCoffee) {
+    extrasBox.placeholder =
+      "Any extras? Syrups, chocolate sprinkles, cinnamon, whipped cream… 🍫✨";
+  }
+
+  if (isTea) {
+    extrasBox.placeholder =
+      "Any extras? Biscuits, lemon, honey, extra milk… 🍪🍋";
+  }
+});
+
 
     coffeeType.addEventListener("change", () => {
       const isExtraFrothy = coffeeType.value === "Extra Frothy";
