@@ -24,11 +24,7 @@
     }
 
     h1 { margin-bottom: 8px; }
-    .subtitle {
-      color: #777;
-      margin-bottom: 24px;
-      font-size: 14px;
-    }
+    .subtitle { color: #777; margin-bottom: 24px; font-size: 14px; }
 
     label {
       display: block;
@@ -67,6 +63,7 @@
 
     .success { padding: 32px 16px; }
     .timer { font-size: 18px; margin-top: 12px; font-weight: 600; }
+    .hint { font-size: 13px; color: #888; margin-top: 4px; text-align: left; }
   </style>
 </head>
 
@@ -94,13 +91,12 @@
           <option value="Extra Frothy">Extra Frothy ☁️</option>
         </select>
 
-        <label>Caffeines</label>
+        <label>Shots</label>
         <select id="shots" name="shots">
           <option value="No Shot">No Shot</option>
-          <option value="Single">Single Shot</option>
-          <option value="Double">Double Shot</option>
+          <option value="Single Shot">Single Shot</option>
+          <option value="Double Shot">Double Shot</option>
         </select>
-
         <div id="sizeContainer" class="hidden">
           <label>Size</label>
           <select name="size">
@@ -114,15 +110,18 @@
       <div id="teaOptions" class="hidden">
         <label>Sugar?</label>
         <select name="sugar">
-          <option value="Yes">Yes</option>
           <option value="No">No</option>
+          <option value="Yes">Yes</option>
         </select>
       </div>
 
-      <label>Extras</label>
+      <!-- Extras -->
+      <label id="extrasLabel" class="hidden">Extras</label>
       <textarea
+        id="extrasBox"
         name="extras"
-        placeholder="Milk, lemon, honey, syrups, chocolate sprinkles… ✨"
+        class="hidden"
+        placeholder=""
       ></textarea>
 
       <button type="submit">Place Order ☕🍵</button>
@@ -144,34 +143,39 @@
     const shots = document.getElementById("shots");
     const sizeContainer = document.getElementById("sizeContainer");
     const form = document.getElementById("drinkForm");
+    const extrasBox = document.getElementById("extrasBox");
+    const extrasLabel = document.getElementById("extrasLabel");
 
     const successMessage = document.getElementById("successMessage");
     const successTitle = document.getElementById("successTitle");
     const successText = document.getElementById("successText");
     const timerText = document.getElementById("timerText");
 
+    // Show/hide options based on drink type
     drinkType.addEventListener("change", () => {
-      const extrasBox = document.getElementById("extrasBox");
+      const isCoffee = drinkType.value === "Coffee";
+      const isTea = drinkType.value === "Tea";
 
-drinkType.addEventListener("change", () => {
-  const isCoffee = drinkType.value === "Coffee";
-  const isTea = drinkType.value === "Tea";
+      coffeeOptions.classList.toggle("hidden", !isCoffee);
+      teaOptions.classList.toggle("hidden", !isTea);
 
-  coffeeOptions.classList.toggle("hidden", !isCoffee);
-  teaOptions.classList.toggle("hidden", !isTea);
+      if (isCoffee) {
+        extrasLabel.classList.remove("hidden");
+        extrasBox.classList.remove("hidden");
+        extrasBox.placeholder =
+          "Any extras? Syrups, chocolate sprinkles, cinnamon, whipped cream… 🍫✨";
+      } else if (isTea) {
+        extrasLabel.classList.remove("hidden");
+        extrasBox.classList.remove("hidden");
+        extrasBox.placeholder =
+          "Any extras? Biscuits, lemon, honey, extra milk… 🍪🍋";
+      } else {
+        extrasLabel.classList.add("hidden");
+        extrasBox.classList.add("hidden");
+      }
+    });
 
-  if (isCoffee) {
-    extrasBox.placeholder =
-      "Any extras? Syrups, chocolate sprinkles, cinnamon, whipped cream… 🍫✨";
-  }
-
-  if (isTea) {
-    extrasBox.placeholder =
-      "Any extras? Biscuits, lemon, honey, extra milk… 🍪🍋";
-  }
-});
-
-
+    // Coffee-specific logic
     coffeeType.addEventListener("change", () => {
       const isExtraFrothy = coffeeType.value === "Extra Frothy";
       sizeContainer.classList.toggle("hidden", !isExtraFrothy);
@@ -183,6 +187,7 @@ drinkType.addEventListener("change", () => {
       }
     });
 
+    // Fake approval timer
     function startApprovalTimer(seconds, drink) {
       let remaining = seconds;
 
@@ -207,6 +212,7 @@ drinkType.addEventListener("change", () => {
       }, 1000);
     }
 
+    // Form submission
     form.addEventListener("submit", e => {
       e.preventDefault();
       const chosenDrink = drinkType.value;
@@ -218,7 +224,7 @@ drinkType.addEventListener("change", () => {
       }).then(() => {
         form.classList.add("hidden");
         successMessage.classList.remove("hidden");
-        startApprovalTimer(120, chosenDrink);
+        startApprovalTimer(120, chosenDrink); // 2-minute fake timer
       });
     });
   </script>
