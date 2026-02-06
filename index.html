@@ -42,6 +42,7 @@
       border: 1px solid #ddd;
       font-size: 16px;
       background: #fafafa;
+      box-sizing: border-box;
     }
 
     textarea { resize: none; height: 90px; }
@@ -61,9 +62,21 @@
 
     .hidden { display: none; }
 
-    .success { padding: 32px 16px; }
+    .success { padding: 32px 16px; text-align: center; }
     .timer { font-size: 18px; margin-top: 12px; font-weight: 600; }
     .hint { font-size: 13px; color: #888; margin-top: 4px; text-align: left; }
+
+    /* Fix extras box containment */
+    #extrasLabel {
+      margin-top: 16px;
+      display: block;
+      text-align: left;
+    }
+    #extrasBox {
+      margin-top: 6px;
+      width: 100%;
+      display: block;
+    }
   </style>
 </head>
 
@@ -91,12 +104,16 @@
           <option value="Extra Frothy">Extra Frothy ☁️</option>
         </select>
 
-        <label>Caffeine Shots</label>
-        <select id="shots" name="shots">
-          <option value="No Shot">No Shot</option>
-          <option value="Single Shot">Single Shot</option>
-          <option value="Double Shot">Double Shot</option>
-        </select>
+        <div id="shotsContainer" class="hidden">
+          <label>Caffeine Shots</label>
+          <select id="shots" name="shots">
+            <option value="No Shot">No Shot</option>
+            <option value="Single Shot">Single Shot</option>
+            <option value="Double Shot">Double Shot</option>
+          </select>
+          <div class="hint">Double shot available with Extra Frothy ☕</div>
+        </div>
+
         <div id="sizeContainer" class="hidden">
           <label>Size</label>
           <select name="size">
@@ -117,12 +134,7 @@
 
       <!-- Extras -->
       <label id="extrasLabel" class="hidden">Extras</label>
-      <textarea
-        id="extrasBox"
-        name="extras"
-        class="hidden"
-        placeholder=""
-      ></textarea>
+      <textarea id="extrasBox" name="extras" class="hidden" placeholder=""></textarea>
 
       <button type="submit">Place Order ☕🍵</button>
     </form>
@@ -141,6 +153,7 @@
     const teaOptions = document.getElementById("teaOptions");
     const coffeeType = document.getElementById("coffeeType");
     const shots = document.getElementById("shots");
+    const shotsContainer = document.getElementById("shotsContainer");
     const sizeContainer = document.getElementById("sizeContainer");
     const form = document.getElementById("drinkForm");
     const extrasBox = document.getElementById("extrasBox");
@@ -178,7 +191,9 @@
     // Coffee-specific logic
     coffeeType.addEventListener("change", () => {
       const isExtraFrothy = coffeeType.value === "Extra Frothy";
+
       sizeContainer.classList.toggle("hidden", !isExtraFrothy);
+      shotsContainer.classList.toggle("hidden", !isExtraFrothy);
 
       const doubleShot = [...shots.options].find(o => o.value === "Double Shot");
       doubleShot.disabled = !isExtraFrothy;
@@ -224,7 +239,7 @@
       }).then(() => {
         form.classList.add("hidden");
         successMessage.classList.remove("hidden");
-        startApprovalTimer(120, chosenDrink); // 2-minute fake timer
+        startApprovalTimer(120, chosenDrink);
       });
     });
   </script>
